@@ -1,0 +1,8 @@
+{
+  "name": "@ham2k/util/format",
+  "version": "0.0.1",
+  "type": "commonjs",
+  "dependencies": {
+    "luxon": "^3.0.4"
+  }
+}
