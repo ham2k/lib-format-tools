@@ -63,7 +63,7 @@ function fmtDateTime(dt, format) {
   }
 
   if (dt) {
-    let s = dt.toLocaleString(FORMATS[format])
+    let s = dt.toLocaleString(FORMATS[format] || format)
     if (AFTER_FORMATS[format]) s = AFTER_FORMATS[format](s)
 
     return s
@@ -75,6 +75,7 @@ function fmtDateTime(dt, format) {
 const fmtContestTimestamp = dateFormatterGenerator("contestTimestamp")
 const fmtContestTimestampZulu = dateFormatterGenerator("contestTimestampZulu")
 const fmtDateMonthYear = dateFormatterGenerator("monthYear")
+const fmtDateTimeNice = dateFormatterGenerator("niceDateTime")
 
 function fmtMinutesAsHM(minutes) {
   const h = Math.floor(minutes / 60)
@@ -89,4 +90,5 @@ module.exports = {
   fmtContestTimestampZulu,
   fmtDateMonthYear,
   fmtMinutesAsHM,
+  fmtDateTimeNice,
 }
