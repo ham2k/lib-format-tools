@@ -1,5 +1,5 @@
 {
-  "root": "libs/util/format",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/util/format/src",
   "projectType": "library",
   "targets": {
@@ -22,9 +22,9 @@
     },
     "test": {
       "executor": "@nrwl/jest:jest",
-      "outputs": ["coverage/libs/util/format"],
+      "outputs": ["{workspaceRoot}/coverage/libs/util/format"],
       "options": {
-        "jestConfig": "libs/util/format/jest.config.js",
+        "jestConfig": "libs/util/format/jest.config.ts",
         "passWithNoTests": true
       }
     }
