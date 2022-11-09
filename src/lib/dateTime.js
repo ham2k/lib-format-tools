@@ -20,6 +20,10 @@ const FORMATS = {
     year: "numeric",
     month: "long",
   },
+  dayMonth: {
+    day: "numeric",
+    month: "long",
+  },
   niceDateTime: {
     weekday: "short",
     day: "numeric",
@@ -35,7 +39,8 @@ const AFTER_FORMATS = {
   contestTimestampZulu: (str) => str.replace(" UTC", "Z"),
 }
 
-function dateFormatterGenerator(format) {
+function dateFormatterGenerator(format, options) {
+  let formatOptions = { ...FORMATS[format], ...options }
   return (dt) => {
     if (dt instanceof Date) {
       dt = DateTime.fromISO(dt.toISOString())
@@ -45,7 +50,7 @@ function dateFormatterGenerator(format) {
       dt = DateTime.fromMillis(dt)
     }
     if (dt) {
-      let s = dt.toLocaleString(FORMATS[format])
+      let s = dt.toLocaleString(formatOptions)
       if (AFTER_FORMATS[format]) s = AFTER_FORMATS[format](s)
 
       return s
@@ -76,6 +81,7 @@ const fmtContestTimestamp = dateFormatterGenerator("contestTimestamp")
 const fmtContestTimestampZulu = dateFormatterGenerator("contestTimestampZulu")
 const fmtDateMonthYear = dateFormatterGenerator("monthYear")
 const fmtDateTimeNice = dateFormatterGenerator("niceDateTime")
+const fmtDateDayMonth = dateFormatterGenerator("dayMonth")
 
 function fmtMinutesAsHM(minutes) {
   const h = Math.floor(minutes / 60)
@@ -85,10 +91,12 @@ function fmtMinutesAsHM(minutes) {
 }
 
 module.exports = {
+  dateFormatterGenerator,
   fmtDateTime,
   fmtContestTimestamp,
   fmtContestTimestampZulu,
   fmtDateMonthYear,
   fmtMinutesAsHM,
   fmtDateTimeNice,
+  fmtDateDayMonth,
 }
