@@ -1,5 +1,5 @@
 {
-  "name": "@ham2k/util/format",
+  "name": "@ham2k/util-format",
   "version": "0.0.1",
   "type": "commonjs",
   "dependencies": {
