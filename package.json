@@ -1,8 +1,23 @@
 {
-  "name": "@ham2k/util/format",
+  "name": "@ham2k/lib-format-tools",
   "version": "0.0.1",
   "type": "commonjs",
   "dependencies": {
     "luxon": "^3.0.4"
+  },
+  "devDependencies": {
+    "jest": "^29.5.0",
+    "standard": "^17.0.0"
+  },
+  "exports": {
+    ".": "./src/index.js"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "standard": {
+    "env": [
+      "jest"
+    ]
   }
 }

@@ -1,52 +1,52 @@
-const { DateTime } = require("luxon")
+const { DateTime } = require('luxon')
 
 const FORMATS = {
   contestTimestamp: {
-    hourCycle: "h23",
-    weekday: "short",
-    hour: "numeric",
-    minute: "numeric",
-    timeZoneName: "short",
+    hourCycle: 'h23',
+    weekday: 'short',
+    hour: 'numeric',
+    minute: 'numeric',
+    timeZoneName: 'short'
   },
   contestTimestampZulu: {
-    hourCycle: "h23",
-    weekday: "short",
-    hour: "numeric",
-    minute: "numeric",
-    timeZoneName: "short",
-    timeZone: "Zulu",
+    hourCycle: 'h23',
+    weekday: 'short',
+    hour: 'numeric',
+    minute: 'numeric',
+    timeZoneName: 'short',
+    timeZone: 'Zulu'
   },
   monthYear: {
-    year: "numeric",
-    month: "long",
+    year: 'numeric',
+    month: 'long'
   },
   dayMonth: {
-    day: "numeric",
-    month: "long",
+    day: 'numeric',
+    month: 'long'
   },
   niceDateTime: {
-    weekday: "short",
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    timeZoneName: "short",
-  },
+    weekday: 'short',
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    timeZoneName: 'short'
+  }
 }
 
 const AFTER_FORMATS = {
-  contestTimestampZulu: (str) => str.replace(" UTC", "Z"),
+  contestTimestampZulu: (str) => str.replace(' UTC', 'Z')
 }
 
-function dateFormatterGenerator(format, options) {
-  let formatOptions = { ...FORMATS[format], ...options }
+function dateFormatterGenerator (format, options) {
+  const formatOptions = { ...FORMATS[format], ...options }
   return (dt) => {
     if (dt instanceof Date) {
       dt = DateTime.fromISO(dt.toISOString())
-    } else if (typeof dt === "string") {
+    } else if (typeof dt === 'string') {
       dt = DateTime.fromISO(dt)
-    } else if (typeof dt === "number") {
+    } else if (typeof dt === 'number') {
       dt = DateTime.fromMillis(dt)
     }
     if (dt) {
@@ -55,15 +55,15 @@ function dateFormatterGenerator(format, options) {
 
       return s
     } else {
-      return ""
+      return ''
     }
   }
 }
 
-function fmtDateTime(dt, format) {
-  if (typeof dt === "string") {
+function fmtDateTime (dt, format) {
+  if (typeof dt === 'string') {
     dt = DateTime.fromISO(dt)
-  } else if (typeof dt === "number") {
+  } else if (typeof dt === 'number') {
     dt = DateTime.fromMillis(dt)
   }
 
@@ -73,17 +73,17 @@ function fmtDateTime(dt, format) {
 
     return s
   } else {
-    return ""
+    return ''
   }
 }
 
-const fmtContestTimestamp = dateFormatterGenerator("contestTimestamp")
-const fmtContestTimestampZulu = dateFormatterGenerator("contestTimestampZulu")
-const fmtDateMonthYear = dateFormatterGenerator("monthYear")
-const fmtDateTimeNice = dateFormatterGenerator("niceDateTime")
-const fmtDateDayMonth = dateFormatterGenerator("dayMonth")
+const fmtContestTimestamp = dateFormatterGenerator('contestTimestamp')
+const fmtContestTimestampZulu = dateFormatterGenerator('contestTimestampZulu')
+const fmtDateMonthYear = dateFormatterGenerator('monthYear')
+const fmtDateTimeNice = dateFormatterGenerator('niceDateTime')
+const fmtDateDayMonth = dateFormatterGenerator('dayMonth')
 
-function fmtMinutesAsHM(minutes) {
+function fmtMinutesAsHM (minutes) {
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
 
@@ -98,5 +98,5 @@ module.exports = {
   fmtDateMonthYear,
   fmtMinutesAsHM,
   fmtDateTimeNice,
-  fmtDateDayMonth,
+  fmtDateDayMonth
 }
