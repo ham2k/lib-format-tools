@@ -1,14 +1,16 @@
 const { DateTime } = require('luxon')
+const { capitalizeFirstLetter } = require('./string')
 
+// https://github.com/moment/luxon/blob/master/docs/formatting.md
 const FORMATS = {
-  contestTimestamp: {
+  ContestTimestamp: {
     hourCycle: 'h23',
     weekday: 'short',
     hour: 'numeric',
     minute: 'numeric',
     timeZoneName: 'short'
   },
-  contestTimestampZulu: {
+  ContestTimestampZulu: {
     hourCycle: 'h23',
     weekday: 'short',
     hour: 'numeric',
@@ -16,15 +18,15 @@ const FORMATS = {
     timeZoneName: 'short',
     timeZone: 'Zulu'
   },
-  monthYear: {
+  MonthYear: {
     year: 'numeric',
     month: 'long'
   },
-  dayMonth: {
+  DateDayMonth: {
     day: 'numeric',
     month: 'long'
   },
-  niceDateTime: {
+  NiceDateTime: {
     weekday: 'short',
     day: 'numeric',
     month: 'long',
@@ -32,6 +34,15 @@ const FORMATS = {
     hour: 'numeric',
     minute: 'numeric',
     timeZoneName: 'short'
+  },
+  ADIFDate: {
+    format: 'yyyyMMdd',
+  },
+  ADIFTime: {
+    format: 'HHmm',
+  },
+  ADIFDateTime: {
+    format: 'yyyyMMdd HHmmss',
   }
 }
 
@@ -40,8 +51,9 @@ const AFTER_FORMATS = {
 }
 
 function dateFormatterGenerator (format, options) {
-  const formatOptions = { ...FORMATS[format], ...options }
-  return (dt) => {
+  return (dt, callOptions) => {
+    const formatOptions = { ...FORMATS[format], ...options, ...callOptions }
+
     if (dt instanceof Date) {
       dt = DateTime.fromISO(dt.toISOString())
     } else if (typeof dt === 'string') {
@@ -50,7 +62,11 @@ function dateFormatterGenerator (format, options) {
       dt = DateTime.fromMillis(dt)
     }
     if (dt) {
-      let s = dt.toLocaleString(formatOptions)
+      let s
+
+      if (formatOptions.format) s = dt.toFormat(formatOptions.format)
+      else s = dt.toLocaleString(formatOptions)
+
       if (AFTER_FORMATS[format]) s = AFTER_FORMATS[format](s)
 
       return s
@@ -68,7 +84,9 @@ function fmtDateTime (dt, format) {
   }
 
   if (dt) {
-    let s = dt.toLocaleString(FORMATS[format] ?? format)
+    if (formatOptions.format) s = dt.toFormat(formatOptions.format)
+    else s = dt.toLocaleString(formatOptions)
+
     if (AFTER_FORMATS[format]) s = AFTER_FORMATS[format](s)
 
     return s
@@ -76,6 +94,7 @@ function fmtDateTime (dt, format) {
     return ''
   }
 }
+
 
 const fmtContestTimestamp = dateFormatterGenerator('contestTimestamp')
 const fmtContestTimestampZulu = dateFormatterGenerator('contestTimestampZulu')
@@ -90,13 +109,57 @@ function fmtMinutesAsHM (minutes) {
   return `${h}h ${m}m`
 }
 
+fucntion fmtDateTimeISO (dt) {
+  if (typeof dt === 'string') {
+    dt = DateTime.fromISO(dt)
+  } else if (typeof dt === 'number') {
+    dt = DateTime.fromMillis(dt)
+  }
+
+  if (dt) {
+    return dt.toISO()
+  } else {
+    return ''
+  }
+}
+
+fucntion fmtDateISO (dt) {
+  if (typeof dt === 'string') {
+    dt = DateTime.fromISO(dt)
+  } else if (typeof dt === 'number') {
+    dt = DateTime.fromMillis(dt)
+  }
+
+  if (dt) {
+    return dt.toISODate()
+  } else {
+    return ''
+  }
+}
+
+fucntion fmtTimeISO (dt) {
+  if (typeof dt === 'string') {
+    dt = DateTime.fromISO(dt)
+  } else if (typeof dt === 'number') {
+    dt = DateTime.fromMillis(dt)
+  }
+
+  if (dt) {
+    return dt.toISOTime()
+  } else {
+    return ''
+  }
+}
+
+
 module.exports = {
   dateFormatterGenerator,
   fmtDateTime,
-  fmtContestTimestamp,
-  fmtContestTimestampZulu,
-  fmtDateMonthYear,
   fmtMinutesAsHM,
-  fmtDateTimeNice,
-  fmtDateDayMonth
+  fmtDateTimeISO,
+  fmtDateISO,
+  fmtTimeISO
 }
+FORMATS.each ((key, format) => {
+  module.exports[`fmt${key}`] = dateFormatterGenerator(key)
+))
