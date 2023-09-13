@@ -50,40 +50,19 @@ const AFTER_FORMATS = {
   contestTimestampZulu: (str) => str.replace(' UTC', 'Z')
 }
 
-function dateFormatterGenerator (format, options) {
-  return (dt, callOptions) => {
-    const formatOptions = { ...FORMATS[format], ...options, ...callOptions }
+function fmtDateTime (dt, format, options) {
+  const formatOptions = { ...FORMATS[format], ...options }
 
-    if (dt instanceof Date) {
-      dt = DateTime.fromISO(dt.toISOString())
-    } else if (typeof dt === 'string') {
-      dt = DateTime.fromISO(dt)
-    } else if (typeof dt === 'number') {
-      dt = DateTime.fromMillis(dt)
-    }
-    if (dt) {
-      let s
-
-      if (formatOptions.format) s = dt.toFormat(formatOptions.format)
-      else s = dt.toLocaleString(formatOptions)
-
-      if (AFTER_FORMATS[format]) s = AFTER_FORMATS[format](s)
-
-      return s
-    } else {
-      return ''
-    }
-  }
-}
-
-function fmtDateTime (dt, format) {
-  if (typeof dt === 'string') {
+  if (dt instanceof Date) {
+    dt = DateTime.fromISO(dt.toISOString())
+  } else if (typeof dt === 'string') {
     dt = DateTime.fromISO(dt)
   } else if (typeof dt === 'number') {
     dt = DateTime.fromMillis(dt)
   }
-
   if (dt) {
+    let s
+
     if (formatOptions.format) s = dt.toFormat(formatOptions.format)
     else s = dt.toLocaleString(formatOptions)
 
@@ -95,12 +74,15 @@ function fmtDateTime (dt, format) {
   }
 }
 
+function dateFormatterGenerator (format, options) {
+  return (dt, callOptions) => fmtDateTime(dt, format, { ...options, ...callOptions })
+}
 
-const fmtContestTimestamp = dateFormatterGenerator('contestTimestamp')
-const fmtContestTimestampZulu = dateFormatterGenerator('contestTimestampZulu')
-const fmtDateMonthYear = dateFormatterGenerator('monthYear')
-const fmtDateTimeNice = dateFormatterGenerator('niceDateTime')
-const fmtDateDayMonth = dateFormatterGenerator('dayMonth')
+// const fmtContestTimestamp = dateFormatterGenerator('contestTimestamp')
+// const fmtContestTimestampZulu = dateFormatterGenerator('contestTimestampZulu')
+// const fmtDateMonthYear = dateFormatterGenerator('monthYear')
+// const fmtDateTimeNice = dateFormatterGenerator('niceDateTime')
+// const fmtDateDayMonth = dateFormatterGenerator('dayMonth')
 
 function fmtMinutesAsHM (minutes) {
   const h = Math.floor(minutes / 60)
@@ -109,7 +91,7 @@ function fmtMinutesAsHM (minutes) {
   return `${h}h ${m}m`
 }
 
-fucntion fmtDateTimeISO (dt) {
+function fmtDateTimeISO (dt) {
   if (typeof dt === 'string') {
     dt = DateTime.fromISO(dt)
   } else if (typeof dt === 'number') {
@@ -123,7 +105,7 @@ fucntion fmtDateTimeISO (dt) {
   }
 }
 
-fucntion fmtDateISO (dt) {
+function fmtDateISO (dt) {
   if (typeof dt === 'string') {
     dt = DateTime.fromISO(dt)
   } else if (typeof dt === 'number') {
@@ -137,7 +119,7 @@ fucntion fmtDateISO (dt) {
   }
 }
 
-fucntion fmtTimeISO (dt) {
+function fmtTimeISO (dt) {
   if (typeof dt === 'string') {
     dt = DateTime.fromISO(dt)
   } else if (typeof dt === 'number') {
@@ -160,6 +142,11 @@ module.exports = {
   fmtDateISO,
   fmtTimeISO
 }
-FORMATS.each ((key, format) => {
-  module.exports[`fmt${key}`] = dateFormatterGenerator(key)
-))
+
+Object.entries(FORMATS).forEach ((pair) => {
+  const [key, format] = pair
+  console.log(key)
+  const name = `fmt${capitalizeFirstLetter(key)}`
+  console.log(`generating ${name}`)
+  module.exports[name] = dateFormatterGenerator(key)
+})
