@@ -145,8 +145,6 @@ module.exports = {
 
 Object.entries(FORMATS).forEach ((pair) => {
   const [key, format] = pair
-  console.log(key)
   const name = `fmt${capitalizeFirstLetter(key)}`
-  console.log(`generating ${name}`)
   module.exports[name] = dateFormatterGenerator(key)
 })
