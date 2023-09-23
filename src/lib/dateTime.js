@@ -47,7 +47,7 @@ const FORMATS = {
 }
 
 const AFTER_FORMATS = {
-  contestTimestampZulu: (str) => str.replace(' UTC', 'Z')
+  ContestTimestampZulu: (str) => str.replace(' UTC', 'Z')
 }
 
 function fmtDateTime (dt, format, options) {
