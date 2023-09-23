@@ -9,6 +9,14 @@ describe('Date Time Formatting', () => {
       expect(fmtDateTime("2023-01-02T21:22:23+00:00", "MonthYear")).toEqual("January 2023")
     })
 
+    it('should format a timestamp from milliseconds', () => {
+      expect(fmtDateTime(Date.parse("2023-01-02T21:22:23+00:00"), "MonthYear")).toEqual("January 2023")
+    })
+
+    it('should format a timestamp from a date object', () => {
+      expect(fmtDateTime(new Date(Date.parse("2023-01-02T21:22:23+00:00")), "MonthYear")).toEqual("January 2023")
+    })
+
     it('should format a timestamp with options', () => {
       expect(fmtDateTime("2023-01-02T21:22:23+00:00", "MonthYear", {month: "short", day: "numeric"})).toEqual("Jan 2, 2023")
     })

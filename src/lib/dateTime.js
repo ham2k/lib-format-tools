@@ -59,7 +59,10 @@ function fmtDateTime (dt, format, options) {
     dt = DateTime.fromISO(dt)
   } else if (typeof dt === 'number') {
     dt = DateTime.fromMillis(dt)
+  } else if (typeof dt === 'object' && dt.getMilliseconds) {
+    dt = DateTime.fromMillis(dt.getMilliseconds())
   }
+
   if (dt) {
     let s
 
