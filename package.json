@@ -1,6 +1,6 @@
 {
   "name": "@ham2k/lib-format-tools",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "type": "commonjs",
   "dependencies": {
     "luxon": "^3.0.4"

@@ -95,10 +95,14 @@ function fmtMinutesAsHM (minutes) {
 }
 
 function fmtDateTimeISO (dt) {
-  if (typeof dt === 'string') {
+  if (dt instanceof Date) {
+    dt = DateTime.fromISO(dt.toISOString())
+  } else if (typeof dt === 'string') {
     dt = DateTime.fromISO(dt)
   } else if (typeof dt === 'number') {
     dt = DateTime.fromMillis(dt)
+  } else if (typeof dt === 'object' && dt.getMilliseconds) {
+    dt = DateTime.fromMillis(dt.getMilliseconds())
   }
 
   if (dt) {
@@ -109,10 +113,14 @@ function fmtDateTimeISO (dt) {
 }
 
 function fmtDateISO (dt) {
-  if (typeof dt === 'string') {
+  if (dt instanceof Date) {
+    dt = DateTime.fromISO(dt.toISOString())
+  } else if (typeof dt === 'string') {
     dt = DateTime.fromISO(dt)
   } else if (typeof dt === 'number') {
     dt = DateTime.fromMillis(dt)
+  } else if (typeof dt === 'object' && dt.getMilliseconds) {
+    dt = DateTime.fromMillis(dt.getMilliseconds())
   }
 
   if (dt) {
@@ -123,10 +131,14 @@ function fmtDateISO (dt) {
 }
 
 function fmtTimeISO (dt) {
-  if (typeof dt === 'string') {
+  if (dt instanceof Date) {
+    dt = DateTime.fromISO(dt.toISOString())
+  } else if (typeof dt === 'string') {
     dt = DateTime.fromISO(dt)
   } else if (typeof dt === 'number') {
     dt = DateTime.fromMillis(dt)
+  } else if (typeof dt === 'object' && dt.getMilliseconds) {
+    dt = DateTime.fromMillis(dt.getMilliseconds())
   }
 
   if (dt) {
