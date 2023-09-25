@@ -50,18 +50,24 @@ const AFTER_FORMATS = {
   ContestTimestampZulu: (str) => str.replace(' UTC', 'Z')
 }
 
+function ensureDateTime (dt) {
+  if (dt instanceof DateTime) {
+    return dt
+  } else if (dt instanceof Date) {
+    return DateTime.fromISO(dt.toISOString())
+  } else if (typeof dt === 'string') {
+    return DateTime.fromISO(dt)
+  } else if (typeof dt === 'number') {
+    return DateTime.fromMillis(dt)
+  } else {
+    return null
+  }
+}
+
 function fmtDateTime (dt, format, options) {
   const formatOptions = { ...FORMATS[format], ...options }
 
-  if (dt instanceof Date) {
-    dt = DateTime.fromISO(dt.toISOString())
-  } else if (typeof dt === 'string') {
-    dt = DateTime.fromISO(dt)
-  } else if (typeof dt === 'number') {
-    dt = DateTime.fromMillis(dt)
-  } else if (typeof dt === 'object' && dt.getMilliseconds) {
-    dt = DateTime.fromMillis(dt.getMilliseconds())
-  }
+  dt = ensureDateTime(dt)
 
   if (dt) {
     let s
@@ -81,12 +87,6 @@ function dateFormatterGenerator (format, options) {
   return (dt, callOptions) => fmtDateTime(dt, format, { ...options, ...callOptions })
 }
 
-// const fmtContestTimestamp = dateFormatterGenerator('contestTimestamp')
-// const fmtContestTimestampZulu = dateFormatterGenerator('contestTimestampZulu')
-// const fmtDateMonthYear = dateFormatterGenerator('monthYear')
-// const fmtDateTimeNice = dateFormatterGenerator('niceDateTime')
-// const fmtDateDayMonth = dateFormatterGenerator('dayMonth')
-
 function fmtMinutesAsHM (minutes) {
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
@@ -95,67 +95,24 @@ function fmtMinutesAsHM (minutes) {
 }
 
 function fmtDateTimeISO (dt) {
-  if (dt instanceof Date) {
-    dt = DateTime.fromISO(dt.toISOString())
-  } else if (typeof dt === 'string') {
-    dt = DateTime.fromISO(dt)
-  } else if (typeof dt === 'number') {
-    dt = DateTime.fromMillis(dt)
-  } else if (typeof dt === 'object' && dt.getMilliseconds) {
-    dt = DateTime.fromMillis(dt.getMilliseconds())
-  }
+  dt = ensureDateTime(dt)
 
-  if (dt) {
-    return dt.toISO()
-  } else {
-    return ''
-  }
+  return dt?.toUTC()?.toISO({suppressMilliseconds: true}) || ''
 }
 
-function fmtDateISO (dt) {
-  if (dt instanceof Date) {
-    dt = DateTime.fromISO(dt.toISOString())
-  } else if (typeof dt === 'string') {
-    dt = DateTime.fromISO(dt)
-  } else if (typeof dt === 'number') {
-    dt = DateTime.fromMillis(dt)
-  } else if (typeof dt === 'object' && dt.getMilliseconds) {
-    dt = DateTime.fromMillis(dt.getMilliseconds())
-  }
+function fmtDateTimeISOLocal (dt) {
+  dt = ensureDateTime(dt)
 
-  if (dt) {
-    return dt.toISODate()
-  } else {
-    return ''
-  }
+  return dt?.toLocal()?.toISO({suppressMilliseconds: true}) || ''
 }
-
-function fmtTimeISO (dt) {
-  if (dt instanceof Date) {
-    dt = DateTime.fromISO(dt.toISOString())
-  } else if (typeof dt === 'string') {
-    dt = DateTime.fromISO(dt)
-  } else if (typeof dt === 'number') {
-    dt = DateTime.fromMillis(dt)
-  } else if (typeof dt === 'object' && dt.getMilliseconds) {
-    dt = DateTime.fromMillis(dt.getMilliseconds())
-  }
-
-  if (dt) {
-    return dt.toISOTime()
-  } else {
-    return ''
-  }
-}
-
 
 module.exports = {
+  ensureDateTime,
   dateFormatterGenerator,
   fmtDateTime,
   fmtMinutesAsHM,
   fmtDateTimeISO,
-  fmtDateISO,
-  fmtTimeISO
+  fmtDateTimeISOLocal,
 }
 
 Object.entries(FORMATS).forEach ((pair) => {

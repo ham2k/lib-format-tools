@@ -1,24 +1,52 @@
 const {
-  dateFormatterGenerator, fmtDateTime, fmtContestTimestamp, fmtContestTimestampZulu, fmtMonthYear, fmtNiceDateTime,
-  fmtDateISO, fmtTimeISO, fmtDateTimeISO,
+  ensureDateTime, dateFormatterGenerator, fmtDateTime,
+  fmtContestTimestamp, fmtContestTimestampZulu, fmtMonthYear, fmtNiceDateTime,
+  fmtDateTimeISO, fmtDateTimeISOLocal,
 } = require('./dateTime')
 
+const dateStr = "2023-01-02T02:22:23+00:00"
+const dateStrET = "2023-01-01T21:22:23-05:00"
+const dateStrZ = "2023-01-02T02:22:23Z"
+const dateStrETMillis = "2023-01-01T21:22:23.000-05:00" // Added Milliseconds
+const date = new Date(Date.parse(dateStr))
+
 describe('Date Time Formatting', () => {
+  describe('ensureDateTime', () => {
+
+    it('should accept Luxon DateTime objects, and pass them back unmodified', () => {
+      const dt = ensureDateTime(dateStr)
+      expect(ensureDateTime(dt)).toEqual(dt)
+      expect(dt.toISO()).toEqual(dateStrETMillis)
+    })
+
+    it('should accept ISO strings', () => {
+      expect(ensureDateTime(date).toISO()).toEqual(dateStrETMillis)
+    })
+
+    it('should accept milliseconds', () => {
+      expect(ensureDateTime(date.valueOf()).toISO()).toEqual(dateStrETMillis)
+    })
+
+    it('should accept Date objects', () => {
+      expect(ensureDateTime(date).toISO()).toEqual(dateStrETMillis)
+    })
+  })
+
   describe('fmtDateTime', () => {
     it('should format a timestamp', () => {
-      expect(fmtDateTime("2023-01-02T21:22:23+00:00", "MonthYear")).toEqual("January 2023")
+      expect(fmtDateTime(dateStr, "MonthYear")).toEqual("January 2023")
     })
 
     it('should format a timestamp from milliseconds', () => {
-      expect(fmtDateTime(Date.parse("2023-01-02T21:22:23+00:00"), "MonthYear")).toEqual("January 2023")
+      expect(fmtDateTime(date.valueOf(), "MonthYear")).toEqual("January 2023")
     })
 
     it('should format a timestamp from a date object', () => {
-      expect(fmtDateTime(new Date(Date.parse("2023-01-02T21:22:23+00:00")), "MonthYear")).toEqual("January 2023")
+      expect(fmtDateTime(date, "MonthYear")).toEqual("January 2023")
     })
 
     it('should format a timestamp with options', () => {
-      expect(fmtDateTime("2023-01-02T21:22:23+00:00", "MonthYear", {month: "short", day: "numeric"})).toEqual("Jan 2, 2023")
+      expect(fmtDateTime(dateStr, "MonthYear", {month: "short", day: "numeric"})).toEqual("Jan 1, 2023")
     })
   })
 
@@ -27,14 +55,14 @@ describe('Date Time Formatting', () => {
       const fmt = dateFormatterGenerator('MonthYear')
 
       expect(typeof fmt).toEqual('function')
-      expect(fmt("2023-01-02T21:22:23+00:00")).toEqual("January 2023")
+      expect(fmt(dateStr)).toEqual("January 2023")
     })
 
-    it('should accept options to modofy the format definition', () => {
+    it('should accept options to modify the format definition', () => {
       const fmt = dateFormatterGenerator('MonthYear', {month: "short", day: "numeric"})
 
       expect(typeof fmt).toEqual('function')
-      expect(fmt("2023-01-02T21:22:23+00:00")).toEqual("Jan 2, 2023")
+      expect(fmt(dateStr)).toEqual("Jan 1, 2023")
     })
   })
 
@@ -42,45 +70,38 @@ describe('Date Time Formatting', () => {
 
     describe('fmtContestTimestamp', () => {
       it('should format a timestamp', () => {
-        expect(fmtContestTimestamp("2023-01-02T21:22:23+00:00")).toEqual("Mon, 16:22 EST")
+        expect(fmtContestTimestamp(dateStr)).toEqual("Sun, 21:22 EST")
       })
     })
 
     describe('fmtContestTimestampZulu', () => {
       it('should format a timestamp', () => {
-        expect(fmtContestTimestampZulu("2023-01-02T21:22:23+00:00")).toEqual("Mon, 21:22Z")
+        expect(fmtContestTimestampZulu(dateStr)).toEqual("Mon, 02:22Z")
       })
     })
 
     describe('fmtMonthYear', () => {
       it('should format a timestamp', () => {
-        expect(fmtMonthYear("2023-01-02T21:22:23+00:00")).toEqual("January 2023")
+        expect(fmtMonthYear(dateStr)).toEqual("January 2023")
       })
     })
 
     describe('fmtNiceDateTime', () => {
       it('should format a timestamp', () => {
-        expect(fmtNiceDateTime("2023-01-02T21:22:23+00:00")).toEqual("Mon, January 2, 2023, 4:22 PM EST")
+        expect(fmtNiceDateTime(dateStr)).toEqual("Sun, January 1, 2023, 9:22 PM EST")
       })
     })
 
     describe('ISO Formats', () => {
-
-      describe('fmtDateISO', () => {
-        it('should format a timestamp', () => {
-          expect(fmtDateISO("2023-01-02T21:22:23+00:00")).toEqual("2023-01-02")
-        })
-      })
-
-      describe('fmtTimeISO', () => {
-        it('should format a timestamp', () => {
-          expect(fmtTimeISO("2023-01-02T21:22:23+00:00")).toEqual("16:22:23.000-05:00")
-        })
-      })
-
       describe('fmtDateTimeISO', () => {
         it('should format a timestamp', () => {
-          expect(fmtDateTimeISO("2023-01-02T21:22:23+00:00")).toEqual("2023-01-02T16:22:23.000-05:00")
+          expect(fmtDateTimeISO(dateStr)).toEqual(dateStrZ)
+        })
+      })
+
+      describe('fmtDateTimeISOLocal', () => {
+        it('should format a timestamp', () => {
+          expect(fmtDateTimeISOLocal(dateStr)).toEqual(dateStrET)
         })
       })
     })
