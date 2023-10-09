@@ -1,5 +1,5 @@
 function getCurrentLocale () {
-  return navigator.language
+  return navigator?.language || 'en-US'
 }
 
 module.exports = {
