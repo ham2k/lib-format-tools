@@ -43,6 +43,9 @@ const FORMATS = {
   },
   ADIFDateTime: {
     format: 'yyyyMMdd HHmmss',
+  },
+  Timestamp: {
+    format: 'yyyyMMddHHmmss',
   }
 }
 
