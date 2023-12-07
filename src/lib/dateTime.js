@@ -1,5 +1,5 @@
-const { DateTime } = require('luxon')
-const { capitalizeFirstLetter } = require('./string')
+import { DateTime } from 'luxon'
+import { capitalizeFirstLetter } from './string'
 
 // https://github.com/moment/luxon/blob/master/docs/formatting.md
 const FORMATS = {
@@ -53,7 +53,7 @@ const AFTER_FORMATS = {
   ContestTimestampZulu: (str) => str.replace(' UTC', 'Z')
 }
 
-function ensureDateTime (dt) {
+export function ensureDateTime (dt) {
   if (dt instanceof DateTime) {
     return dt
   } else if (dt instanceof Date) {
@@ -67,7 +67,7 @@ function ensureDateTime (dt) {
   }
 }
 
-function fmtDateTime (dt, format, options) {
+export function fmtDateTime (dt, format, options) {
   const formatOptions = { ...FORMATS[format], ...options }
 
   dt = ensureDateTime(dt)
@@ -86,40 +86,35 @@ function fmtDateTime (dt, format, options) {
   }
 }
 
-function dateFormatterGenerator (format, options) {
+export function dateFormatterGenerator (format, options) {
   return (dt, callOptions) => fmtDateTime(dt, format, { ...options, ...callOptions })
 }
 
-function fmtMinutesAsHM (minutes) {
+export function fmtMinutesAsHM (minutes) {
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
 
   return `${h}h ${m}m`
 }
 
-function fmtDateTimeISO (dt) {
+export function fmtDateTimeISO (dt) {
   dt = ensureDateTime(dt)
 
   return dt?.toUTC()?.toISO({suppressMilliseconds: true}) || ''
 }
 
-function fmtDateTimeISOLocal (dt) {
+export function fmtDateTimeISOLocal (dt) {
   dt = ensureDateTime(dt)
 
   return dt?.toLocal()?.toISO({suppressMilliseconds: true}) || ''
 }
 
-module.exports = {
-  ensureDateTime,
-  dateFormatterGenerator,
-  fmtDateTime,
-  fmtMinutesAsHM,
-  fmtDateTimeISO,
-  fmtDateTimeISOLocal,
-}
-
-Object.entries(FORMATS).forEach ((pair) => {
-  const [key, format] = pair
-  const name = `fmt${capitalizeFirstLetter(key)}`
-  module.exports[name] = dateFormatterGenerator(key)
-})
+export const fmtContestTimestamp = dateFormatterGenerator('ContestTimestamp')
+export const fmtContestTimestampZulu = dateFormatterGenerator('ContestTimestampZulu')
+export const fmtMonthYear = dateFormatterGenerator('MonthYear')
+export const fmtDateDayMonth = dateFormatterGenerator('DateDayMonth')
+export const fmtNiceDateTime = dateFormatterGenerator('NiceDateTime')
+export const fmtADIFDate = dateFormatterGenerator('ADIFDate')
+export const fmtADIFTime = dateFormatterGenerator('ADIFTime')
+export const fmtADIFDateTime = dateFormatterGenerator('ADIFDateTime')
+export const fmtTimestamp = dateFormatterGenerator('Timestamp')

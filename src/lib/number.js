@@ -1,4 +1,4 @@
-const { getCurrentLocale } = require('./locale')
+import { getCurrentLocale } from './locale'
 
 const FORMATS = {
   default: {
@@ -18,7 +18,7 @@ const FORMATS = {
 
 const locale = getCurrentLocale()
 
-function fmtNumber (n, format) {
+export function fmtNumber (n, format) {
   if (typeof n === 'string') {
     n = Number.parseFloat(n)
   }
@@ -36,10 +36,10 @@ function numberFormatterGenerator (format) {
   }
 }
 
-const fmtInteger = numberFormatterGenerator('integer')
-const fmtOneDecimal = numberFormatterGenerator('oneDecimal')
+export const fmtInteger = numberFormatterGenerator('integer')
+export const fmtOneDecimal = numberFormatterGenerator('oneDecimal')
 
-function fmtPercent (n, format = 'oneDecimal') {
+export function fmtPercent (n, format = 'oneDecimal') {
   if (typeof n === 'string') {
     n = Number.parseFloat(n)
   }

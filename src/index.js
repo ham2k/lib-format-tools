@@ -1,11 +1,4 @@
-const dateTime = require('./lib/dateTime')
-const locale = require('./lib/locale')
-const number = require('./lib/number')
-const string = require('./lib/string')
-
-module.exports = {
-  ...dateTime,
-  ...locale,
-  ...number,
-  ...string
-}
+export * from './lib/dateTime'
+export * from './lib/locale'
+export * from './lib/number'
+export * from './lib/string'

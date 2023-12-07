@@ -1,8 +1,8 @@
-const {
+import {
   ensureDateTime, dateFormatterGenerator, fmtDateTime,
   fmtContestTimestamp, fmtContestTimestampZulu, fmtMonthYear, fmtNiceDateTime,
   fmtDateTimeISO, fmtDateTimeISOLocal,
-} = require('./dateTime')
+} from './dateTime'
 
 const dateStr = "2023-01-02T02:22:23+00:00"
 const dateStrET = "2023-01-01T21:22:23-05:00"
