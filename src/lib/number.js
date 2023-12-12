@@ -46,10 +46,3 @@ export function fmtPercent (n, format = 'oneDecimal') {
   n = n * 100
   return fmtNumber(n, format) + '%'
 }
-
-module.exports = {
-  fmtNumber,
-  fmtInteger,
-  fmtOneDecimal,
-  fmtPercent
-}
