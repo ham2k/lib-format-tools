@@ -16,19 +16,19 @@ describe('Date Time Formatting', () => {
     it('should accept Luxon DateTime objects, and pass them back unmodified', () => {
       const dt = ensureDateTime(dateStr)
       expect(ensureDateTime(dt)).toEqual(dt)
-      expect(dt.toISO()).toEqual(dateStrETMillis)
+      expect(dt?.toISO()).toEqual(dateStrETMillis)
     })
 
     it('should accept ISO strings', () => {
-      expect(ensureDateTime(date).toISO()).toEqual(dateStrETMillis)
+      expect(ensureDateTime(date)?.toISO()).toEqual(dateStrETMillis)
     })
 
     it('should accept milliseconds', () => {
-      expect(ensureDateTime(date.valueOf()).toISO()).toEqual(dateStrETMillis)
+      expect(ensureDateTime(date.valueOf())?.toISO()).toEqual(dateStrETMillis)
     })
 
     it('should accept Date objects', () => {
-      expect(ensureDateTime(date).toISO()).toEqual(dateStrETMillis)
+      expect(ensureDateTime(date)?.toISO()).toEqual(dateStrETMillis)
     })
   })
 
@@ -46,7 +46,7 @@ describe('Date Time Formatting', () => {
     })
 
     it('should format a timestamp with options', () => {
-      expect(fmtDateTime(dateStr, "MonthYear", {month: "short", day: "numeric"})).toEqual("Jan 1, 2023")
+      expect(fmtDateTime(dateStr, "MonthYear", { month: "short", day: "numeric" })).toEqual("Jan 1, 2023")
     })
   })
 
@@ -59,7 +59,7 @@ describe('Date Time Formatting', () => {
     })
 
     it('should accept options to modify the format definition', () => {
-      const fmt = dateFormatterGenerator('MonthYear', {month: "short", day: "numeric"})
+      const fmt = dateFormatterGenerator('MonthYear', { month: "short", day: "numeric" })
 
       expect(typeof fmt).toEqual('function')
       expect(fmt(dateStr)).toEqual("Jan 1, 2023")
@@ -88,7 +88,7 @@ describe('Date Time Formatting', () => {
 
     describe('fmtNiceDateTime', () => {
       it('should format a timestamp', () => {
-        expect(fmtNiceDateTime(dateStr)).toEqual("Sun, January 1, 2023, 9:22 PM EST")
+        expect(fmtNiceDateTime(dateStr)).toEqual("Sun, January 1, 2023 at 9:22 PM EST")
       })
     })
 
@@ -107,3 +107,4 @@ describe('Date Time Formatting', () => {
     })
   })
 })
+

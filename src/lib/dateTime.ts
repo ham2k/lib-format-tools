@@ -2,7 +2,22 @@ import { DateTime } from 'luxon'
 import { capitalizeFirstLetter } from './string'
 
 // https://github.com/moment/luxon/blob/master/docs/formatting.md
-const FORMATS = {
+type FormatName = 'ContestTimestamp' | 'ContestTimestampZulu' | 'MonthYear' | 'DateDayMonth' | 'NiceDateTime' | 'ADIFDate' | 'ADIFTime' | 'ADIFDateTime' | 'Timestamp'
+
+interface FormatOptions {
+  hourCycle?: 'h23' | 'h12' | 'h11' | 'h24'
+  weekday?: 'short' | 'long' | 'narrow'
+  hour?: 'numeric' | '2-digit'
+  minute?: 'numeric' | '2-digit'
+  timeZoneName?: 'short' | 'long' | 'shortOffset' | 'longOffset' | 'shortGeneric' | 'longGeneric'
+  timeZone?: string
+  year?: 'numeric' | '2-digit'
+  month?: 'long' | 'short' | 'narrow' | 'numeric' | '2-digit'
+  day?: 'numeric' | '2-digit'
+  format?: string
+}
+
+const FORMATS: Record<FormatName, FormatOptions> = {
   ContestTimestamp: {
     hourCycle: 'h23',
     weekday: 'short',
@@ -49,11 +64,11 @@ const FORMATS = {
   }
 }
 
-const AFTER_FORMATS = {
+const AFTER_FORMATS: Record<string, (str: string) => string> = {
   ContestTimestampZulu: (str) => str.replace(' UTC', 'Z')
 }
 
-export function ensureDateTime (dt) {
+export function ensureDateTime (dt: DateTime | Date | string | number | null | undefined): DateTime | null {
   if (dt instanceof DateTime) {
     return dt
   } else if (dt instanceof Date) {
@@ -67,16 +82,16 @@ export function ensureDateTime (dt) {
   }
 }
 
-export function fmtDateTime (dt, format, options) {
+export function fmtDateTime (dt: DateTime | Date | string | number | null | undefined, format: FormatName, options?: Partial<FormatOptions>): string {
   const formatOptions = { ...FORMATS[format], ...options }
 
   dt = ensureDateTime(dt)
 
   if (dt) {
-    let s
+    let s: string
 
     if (formatOptions.format) s = dt.toFormat(formatOptions.format)
-    else s = dt.toLocaleString(formatOptions)
+    else s = dt.toLocaleString(formatOptions as Intl.DateTimeFormatOptions)
 
     if (AFTER_FORMATS[format]) s = AFTER_FORMATS[format](s)
 
@@ -86,24 +101,24 @@ export function fmtDateTime (dt, format, options) {
   }
 }
 
-export function dateFormatterGenerator (format, options) {
-  return (dt, callOptions) => fmtDateTime(dt, format, { ...options, ...callOptions })
+export function dateFormatterGenerator (format: FormatName, options?: Partial<FormatOptions>) {
+  return (dt: DateTime | Date | string | number | null | undefined, callOptions?: Partial<FormatOptions>) => fmtDateTime(dt, format, { ...options, ...callOptions })
 }
 
-export function fmtMinutesAsHM (minutes) {
+export function fmtMinutesAsHM (minutes: number): string {
   const h = Math.floor(minutes / 60)
   const m = minutes % 60
 
   return `${h}h ${m}m`
 }
 
-export function fmtDateTimeISO (dt) {
+export function fmtDateTimeISO (dt: DateTime | Date | string | number | null | undefined): string {
   dt = ensureDateTime(dt)
 
   return dt?.toUTC()?.toISO({suppressMilliseconds: true}) || ''
 }
 
-export function fmtDateTimeISOLocal (dt) {
+export function fmtDateTimeISOLocal (dt: DateTime | Date | string | number | null | undefined): string {
   dt = ensureDateTime(dt)
 
   return dt?.toLocal()?.toISO({suppressMilliseconds: true}) || ''
@@ -118,3 +133,4 @@ export const fmtADIFDate = dateFormatterGenerator('ADIFDate')
 export const fmtADIFTime = dateFormatterGenerator('ADIFTime')
 export const fmtADIFDateTime = dateFormatterGenerator('ADIFDateTime')
 export const fmtTimestamp = dateFormatterGenerator('Timestamp')
+
