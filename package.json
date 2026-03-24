@@ -1,6 +1,6 @@
 {
   "name": "@ham2k/lib-format-tools",
-  "version": "1.0.0",
+  "version": "1.0.4",
   "type": "module",
   "dependencies": {},
   "devDependencies": {
@@ -36,6 +36,7 @@
   },
   "scripts": {
     "build": "tsup",
+    "prepublishOnly": "npm run build",
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
   },
   "standard": {

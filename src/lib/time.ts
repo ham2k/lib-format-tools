@@ -1,6 +1,6 @@
 import { defaultI18N } from './i18n'
 
-type FlexibleTimeValue = number | string | Date
+type FlexibleTimeValue = number | string | Date | null | undefined
 
 export function prepareDateValue(t: FlexibleTimeValue): Date | undefined {
   switch (typeof t) {
