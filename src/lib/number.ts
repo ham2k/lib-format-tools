@@ -1,4 +1,4 @@
-import { getCurrentLocale } from './locale'
+import { getCurrentLocale } from './i18n'
 
 type NumberFormat = 'default' | 'integer' | 'oneDecimal'
 
@@ -55,3 +55,10 @@ export function fmtPercent (n: number | string, format: NumberFormat = 'oneDecim
   return fmtNumber(n, format) + '%'
 }
 
+export function fmtMegabytes (bytes: number): string {
+  return fmtOneDecimal(bytes / (1024 * 1024)) + ' MB'
+}
+
+export function fmtGigabytes (bytes: number): string {
+  return fmtOneDecimal(bytes / (1024 * 1024 * 1024)) + ' GB'
+}

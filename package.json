@@ -1,27 +1,41 @@
 {
   "name": "@ham2k/lib-format-tools",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "type": "module",
-  "dependencies": {
-    "luxon": "^3.7.0"
-  },
+  "dependencies": {},
   "devDependencies": {
-    "@types/luxon": "^3.7.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^24.10.1",
     "jest": "^30.0.0",
     "standard": "^17",
     "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
+    "tsup": "^8.5.1",
     "tsx": "^4.20.6",
     "typescript": "^5.9.3"
   },
-  "main": "./dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      },
+      "default": "./dist/index.js"
+    }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
     "test": "node --experimental-vm-modules ./node_modules/.bin/jest"
   },
   "standard": {
