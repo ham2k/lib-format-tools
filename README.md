@@ -1,3 +1,4 @@
-# lib-format-tools
+# This repository has been moved
 
-Helful methods to work with different data formatting tasks
+It now located at https://github.com/ham2k/ham-js-libs/tree/main/packages/lib-callsigns
+
